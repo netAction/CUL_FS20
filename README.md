@@ -51,7 +51,7 @@ But usually you will never use this line as CUL_FS20 has a nice device manager. 
 		'Remote Ch2' : 'EB9501'
 	});
 
-You can add more devices with the same command later. The devices are stored in *CUL_FS20.devices*. To reduce the code run *var d = CUL_FS20.devices;* or simply use the object *registerDevices* returns:
+You can add more devices with the same command later. The devices are stored in *CUL_FS20.devices*. To reduce the code run *"var d = CUL_FS20.devices;"* or simply use the object *registerDevices()* returns:
 
 	var d = CUL_FS20.registerDevices({
 	  ...

@@ -10,7 +10,7 @@ var d = CUL_FS20.registerDevices({
 
 CUL_FS20.on("connected", function () {
 	// register a new address in a receiver:
-	// CUL_FS20.devices.Desk.dim50();
+	// CUL_FS20.devices.Desk.on();
 	// or shorter:
 	// d.Desk.on();
 	// If you do not want to use the devices manager:
