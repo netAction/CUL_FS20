@@ -61,42 +61,42 @@ function CUL_FS20() {
 
 
 function receiveData(data,self) {
-			// Reverse list of known commands
-			var reverse_commands = {};
-			for(var command in self.commands) {
-				reverse_commands[self.commands[command]] = command;
-			}
+	// Reverse list of known commands
+	var reverse_commands = {};
+	for(var command in self.commands) {
+		reverse_commands[self.commands[command]] = command;
+	}
 
-			var command = data.toString().substr(7);
-			// strip non alphanumeric
-			command = command.replace(/\W/g, '');
-			// strip timecode
-			command = command.substring(0,command.length-2);
+	var command = data.toString().substr(7);
+	// strip non alphanumeric
+	command = command.replace(/\W/g, '');
+	// strip timecode
+	command = command.substring(0,command.length-2);
 
-			if (command in reverse_commands) {
-				command = reverse_commands[command];
-			}
+	if (command in reverse_commands) {
+		command = reverse_commands[command];
+	}
 
-			// Reverse list of FS20 devices
-			var reverse_devices = {};
-			for(var device in self.devices) {
-				reverse_devices[self.devices[device].address] = device;
-			}
+	// Reverse list of FS20 devices
+	var reverse_devices = {};
+	for(var device in self.devices) {
+		reverse_devices[self.devices[device].address] = device;
+	}
 
-			// convert FS20 address to device name
-			// if device not registered keep FS20 address
-			var device = data.toString().substr(1,6);
-			if (device in reverse_devices) {
-				device = reverse_devices[device];
-				self.devices[device].lastCommand = command;
-			}
+	// convert FS20 address to device name
+	// if device not registered keep FS20 address
+	var device = data.toString().substr(1,6);
+	if (device in reverse_devices) {
+		device = reverse_devices[device];
+		self.devices[device].lastCommand = command;
+	}
 
-			var message = {
-				'device' : device,
-				'command' : command,
-				'full' : device+' '+command
-			}
-			self.emit('read',message);
+	var message = {
+		'device' : device,
+		'command' : command,
+		'full' : device+' '+command
+	}
+	self.emit('read',message);
 } // receiveData
 
 
