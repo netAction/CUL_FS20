@@ -9,6 +9,7 @@ CONFIG_DIR=$APP_DIR
 ###############
 # To install copy this file to /etc/init.d/CUL_FS20 without extension.
 # chmod 755 and chown root:root.
+# To run on startup execute: update-rc.d CUL_FS20 defaults
 #
 # Thanks to https://github.com/chovy/node-startup
 
