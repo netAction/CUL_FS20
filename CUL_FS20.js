@@ -96,6 +96,7 @@ function receiveData(data,self) {
 		'command' : command,
 		'full' : device+' '+command
 	}
+	console.log('Received: '+message.full);
 	self.emit('read',message);
 } // receiveData
 
@@ -116,7 +117,7 @@ CUL_FS20.prototype.write = function(message) {
 		 1234 = FS20 housecode (hex)
 				 01 = device address (hex)
 					 11 = command (16bit if extension bit is set in first byte) */
-	console.log("Sending ",message);
+
 	command = this.commands[message.command];
 	this.serialPort.write("F"+message.address+command+"\n");
 } // CUL_FS20.write

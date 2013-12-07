@@ -18,7 +18,7 @@ Installation
 	A directory *node_modules* should be created containing the *serialport* package.
 - Run the program:
 		node app.js
-- If you like, add *init script* and *logrotate*.
+- If you like, install the *init script* for startup at reboot.
 
 
 Usage

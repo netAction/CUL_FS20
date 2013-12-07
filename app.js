@@ -13,10 +13,10 @@ CUL_FS20.on("connected", function () {
 	// CUL_FS20.devices.Desk.on();
 	// or shorter:
 	// d.Desk.on();
-	// If you do not want to use the devices manager:
-	//CUL_FS20.write({'address':'F3AA00','command':'on'});
+	// If you do not want to use the device manager:
+	// CUL_FS20.write({'address':'F3AA00','command':'on'});
 
-	// set all lamps to default
+	// set all lamps to default:
 	// d.Desk.off();
 });
 
@@ -31,7 +31,7 @@ CUL_FS20.on("read", function(message) {
 			break;
 		case 'Remote Ch2 off':
 			// print the status of all devices to console
-			// This will look like this:
+			// The result will look like this:
 			// Desk dim100
 			// Remote Ch1 on
 			// Remote Ch2 off
