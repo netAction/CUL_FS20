@@ -1,0 +1,31 @@
+# CUL_FS20 - Upstart job definition for the CUL_FS20 service
+#
+# Copy this file to /etc/init/CUL_FS20.conf and chown root:root.
+# Check user names and pathes.
+#
+# based on https://github.com/cvee/node-upstart
+
+description     "CUL_FS20 upstart script"
+author          "Thomas Schmidt (netaction.de)"
+
+# When to start the service
+start on runlevel [2345]
+
+# When to stop the service
+stop on runlevel [06]
+
+# Prepare the environment
+#   Create directories for logging and process management
+#   Change ownership to the user running the process
+pre-start script
+    mkdir -p /var/log/CUL_FS20
+    # Adjust owner here!
+    chown -R pi:pi /var/log/CUL_FS20
+end script
+
+# If the process quits unexpectadly trigger a respawn
+respawn
+
+# Start the process
+exec start-stop-daemon --start --chuid pi --exec node -- /home/pi/CUL_FS20/app.js >> /var/log/CUL_FS20/CUL_FS20.log 2>&1
+
