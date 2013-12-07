@@ -94,7 +94,7 @@ function receiveData(data,self) {
 			var message = {
 				'device' : device,
 				'command' : command,
-				'full' : device+'_'+command
+				'full' : device+' '+command
 			}
 			self.emit('read',message);
 } // receiveData
