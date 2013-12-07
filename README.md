@@ -45,13 +45,16 @@ Sending a command to a device works with this command:
 
 But usually you will never use this line as CUL_FS20 has a nice device manager. First add some devices:
 
-	var d = CUL_FS20.registerDevices({
+	CUL_FS20.registerDevices({
 		'Desk' : 'F3AA00',
 		'Remote Ch1' : 'EB9500',
 		'Remote Ch2' : 'EB9501'
 	});
 
-You can add more devices with the same command later. If you need a new variable with the devices simply run *var d2 = CUL_FS20.registerDevices({}); CUL_FS20 has an internal list with all devices.
+You can add more devices with the same command later. The devices are stored in *CUL_FS20.devices*. To reduce the code run *var d = CUL_FS20.devices;* or simply use the object *registerDevices* returns:
+
+	var d = CUL_FS20.registerDevices({
+	  ...
 
 Now sending a commad is *d.Desk.dim100()*.
 

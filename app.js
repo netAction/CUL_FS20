@@ -10,6 +10,8 @@ var d = CUL_FS20.registerDevices({
 
 CUL_FS20.on("connected", function () {
 	// register a new address in a receiver:
+	// CUL_FS20.devices.Desk.dim50();
+	// or shorter:
 	// d.Desk.on();
 	// If you do not want to use the devices manager:
 	//CUL_FS20.write({'address':'F3AA00','command':'on'});
@@ -17,6 +19,7 @@ CUL_FS20.on("connected", function () {
 	// set all lamps to default
 	// d.Desk.off();
 });
+
 
 CUL_FS20.on("read", function(message) {
 	switch(message.full) {
