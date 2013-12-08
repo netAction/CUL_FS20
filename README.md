@@ -69,7 +69,9 @@ Now sending a commad is *d.Desk.dim100()*.
 	  }
 	});
 
-If you need the status of a channel later read *d.Desk.lastCommand*. This contains the last command no matter if it was received or sent by CUL_FS20.
+If you need the status of a channel later read *d.Desk.lastCommand*. This contains the last command no matter if it was received or sent by CUL_FS20. So the code above boils down to:
+
+	d.Desk[(d['Remote Ch1'].lastCommand=='on') ? 'dim100' : 'off']();
 
 Sometimes you want to run some commands just after the CUL adapter has been initialized. This could be the case to send some default values or to to program a receiver to a new address.
 
