@@ -28,6 +28,8 @@ CONFIG_DIR=$APP_DIR
 # Description: Node process for app
 ### END INIT INFO
 
+cd /
+export LC_ALL=POSIX
 
 case "$1" in
     start)
