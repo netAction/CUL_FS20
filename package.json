@@ -6,7 +6,8 @@
 		"start": "node app.js"
 	},
 	"dependencies": {
-		"serialport": "*"
+		"serialport": "*",
+		"log-timestamp": "*"
 	}
 }
 

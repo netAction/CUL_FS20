@@ -1,6 +1,27 @@
+// Class for connecting a CUL adapter to send and receive FS20 commands
+// 2013 Thomas Schmidt
+// MIT License
+// https://github.com/netAction/CUL_FS20
+
+// Connection to CUL adapter
 var SerialPort = require("serialport").SerialPort;
+
+// Timestamp for every console.log
+require('log-timestamp')(function() {
+	var now = new Date();
+	var strDateTime = [
+		[now.getDate(), (now.getMonth() + 1), now.getFullYear()].join("."),
+		[now.getHours(), (now.getMinutes()<10?'0':'')+now.getMinutes()].join(":")]
+		.join(" ");
+	return strDateTime;
+});
+process.env.TZ = 'Europe/Berlin';
+
+// Trigger events "connected" or "read"
 var events = require('events');
 
+
+// The class itself
 function CUL_FS20() {
 	this.serialPort = new SerialPort("/dev/ttyACM0", {
 		baudrate: 9600
@@ -128,6 +149,7 @@ function FS20_Device(CUL_FS20_Obj,deviceName,address) {
 		(function(obj,addr,cmd,self) {
 			self[command] = function() {
 				obj.write({'address':addr,'command':cmd});
+				console.log('   Sent: '+this.name+' '+cmd);
 				self.lastCommand = cmd;
 			}
 		})(CUL_FS20_Obj,address,command,this);
@@ -136,6 +158,10 @@ function FS20_Device(CUL_FS20_Obj,deviceName,address) {
 	this.name = deviceName;
 	// at startup we do not know the last command on this address:
 	this.lastCommand = false;
+	this.toString = function() {
+		return this.lastCommand;
+	}
+	// TODO: lastCommand easier
 }
 
 CUL_FS20.prototype.registerDevices = function(deviceNames) {
