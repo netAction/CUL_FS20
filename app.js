@@ -29,9 +29,9 @@ CUL_FS20.on("read", function(message) {
 		// switched off
 		(d.Remote_Ch1=='off') ? 'off' :
 		// daylight
-		(d.Twilight_sender_Ch2=='off') ? 'dim100' :
+		(d.Twilight_sender_Ch2=='off') ? 'off' :
 		// night
-		'dim62'
+		'dim100'
 	]();
 
 	switch(message.full) {

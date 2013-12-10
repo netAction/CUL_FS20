@@ -7,7 +7,7 @@
 	},
 	"dependencies": {
 		"serialport": "*",
-		"log-timestamp": "*"
+		"winston": "*"
 	}
 }
 

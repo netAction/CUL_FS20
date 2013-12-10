@@ -6,16 +6,22 @@
 // Connection to CUL adapter
 var SerialPort = require("serialport").SerialPort;
 
-// Timestamp for every console.log
-require('log-timestamp')(function() {
-	var now = new Date();
-	var strDateTime = [
-		[now.getDate(), (now.getMonth() + 1), now.getFullYear()].join("."),
-		[now.getHours(), (now.getMinutes()<10?'0':'')+now.getMinutes()].join(":")]
-		.join(" ");
-	return strDateTime;
+// logging to a file with timestamps and logrotate
+var winston = require('winston');
+winston.add(winston.transports.File, {
+	filename: 'CUL_FS20.log',
+	json: false,
+	timestamp: function() {
+		var now = new Date();
+		var strDateTime = [
+			[now.getDate(), (now.getMonth() + 1), now.getFullYear()].join("."),
+			[now.getHours(), (now.getMinutes()<10?'0':'')+now.getMinutes()].join(":")]
+			.join(" ");
+		return strDateTime;
+	}
 });
-process.env.TZ = 'Europe/Berlin';
+// Disable console. If you need it run $ tail -f CUL_FS20.log
+winston.remove(winston.transports.Console);
 
 // Trigger events "connected" or "read"
 var events = require('events');
@@ -62,17 +68,17 @@ function CUL_FS20() {
 	events.EventEmitter.call(this);
 
 	var self = this;
-	console.log('Starting CUL FS20 ...');
+	winston.info('Starting CUL FS20 ...');
 	self.serialPort.on("open", function () {
-		console.log('... connection to CUL opened ...');
+		winston.info('... connection to CUL opened ...');
 		self.serialPort.on('data', function(data) {
 			receiveData(data,self);
 		});
 		self.serialPort.write("X21\n", function(err, results) {
 			if (err) {
-				console.log('error ' + err);
+				winston.error('error ' + err);
 			} else {
-				console.log('... listening to FS20 commands.');
+				winston.info('... listening to FS20 commands.');
 				self.CUL_connected = true;
 				self.emit('connected');
 			}
@@ -117,18 +123,18 @@ function receiveData(data,self) {
 		'command' : command,
 		'full' : device+' '+command
 	}
-	console.log('Received: '+message.full);
+	winston.info('Received: '+message.full);
 	self.emit('read',message);
 } // receiveData
 
 
 CUL_FS20.prototype.write = function(message) {
 	if (this.CUL_connected == false) {
-		console.log("CUL not connected.");
+		winston.error("CUL not connected.");
 		return;
 	}
 	if (!(message.command in this.commands)) {
-		console.log("Command "+message.command+" unknown.");
+		winston.error("Command "+message.command+" unknown.");
 		return;
 	}
 
@@ -149,7 +155,7 @@ function FS20_Device(CUL_FS20_Obj,deviceName,address) {
 		(function(obj,addr,cmd,self) {
 			self[command] = function() {
 				obj.write({'address':addr,'command':cmd});
-				console.log('   Sent: '+this.name+' '+cmd);
+				winston.info('   Sent: '+this.name+' '+cmd);
 				self.lastCommand = cmd;
 			}
 		})(CUL_FS20_Obj,address,command,this);
@@ -161,7 +167,6 @@ function FS20_Device(CUL_FS20_Obj,deviceName,address) {
 	this.toString = function() {
 		return this.lastCommand;
 	}
-	// TODO: lastCommand easier
 }
 
 CUL_FS20.prototype.registerDevices = function(deviceNames) {
@@ -175,3 +180,4 @@ CUL_FS20.prototype.registerDevices = function(deviceNames) {
 CUL_FS20.prototype.__proto__ = events.EventEmitter.prototype;
 
 module.exports = CUL_FS20;
+
