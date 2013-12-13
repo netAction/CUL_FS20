@@ -1,6 +1,10 @@
 var CUL_FS20 = require("./CUL_FS20");
 CUL_FS20 = new CUL_FS20;
 
+
+// Make pstree happy with a nice process title instead of "node":
+process.title = 'CUL_FS20';
+
 var d = CUL_FS20.registerDevices({
 	Desk : 'F3AA00',
 	Remote_Ch1 : 'EB9500',

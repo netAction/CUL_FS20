@@ -15,8 +15,13 @@ winston.add(winston.transports.File, {
 		var now = new Date();
 		var strDateTime = [
 			[now.getDate(), (now.getMonth() + 1), now.getFullYear()].join("."),
-			[now.getHours(), (now.getMinutes()<10?'0':'')+now.getMinutes()].join(":")]
-			.join(" ");
+			[
+				now.getHours(),
+				(now.getMinutes()<10?'0':'')+now.getMinutes(),
+				(now.getSeconds()<10?'0':'')+now.getSeconds(),
+				now.getMilliseconds(),
+			].join(":")
+			].join(" ");
 		return strDateTime;
 	}
 });
