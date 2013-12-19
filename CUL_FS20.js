@@ -75,6 +75,7 @@ function CUL_FS20() {
 	var self = this;
 	winston.info('Starting CUL FS20 ...');
 	self.serialPort.on("open", function () {
+		// TODO: This does not log anything:
 		winston.info('... connection to CUL opened ...');
 		self.serialPort.on('data', function(data) {
 			receiveData(data,self);
@@ -86,6 +87,16 @@ function CUL_FS20() {
 				winston.info('... listening to FS20 commands.');
 				self.CUL_connected = true;
 				self.emit('connected');
+
+				// some settings http://culfw.de/commandref.html
+				// ask for Version number:
+				// self.serialPort.write("V\n"); // answer: "V 1.46 CUL868"
+				// ask for target amplitude:
+				// self.serialPort.write("C1B\n"); // answer: "C1B = 07 /  7"
+				// ask for decision boundery:
+				// self.serialPort.write("C1D\n"); // answer: "C1D = 90 / 144" means 4dB
+				// set to default of 8dB:
+				// self.serialPort.write("W1F91\n"); // not tested
 			}
 		});
 	});
@@ -93,22 +104,34 @@ function CUL_FS20() {
 
 
 function receiveData(data,self) {
+	// data is the received signal. Buffer, no string!
+
+	// winston.info("Raw data received: "+data.toString());
 	// Reverse list of known commands
 	var reverse_commands = {};
 	for(var command in self.commands) {
 		reverse_commands[self.commands[command]] = command;
 	}
 
-	var command = data.toString().substr(7);
+	// First character is "F" or "H".
+	// F are the usual FS20 commands on, dim50, toggle...
+	// H are Temperature, Humidity or stuff
+	var prefix = data.toString().substr(0,1);
+
+	// ### Strip out the command or any other useful data sent:
+	// Everything after the address is the command.
+	var command = data.toString().substr(prefix=="F" ? 7 : 5);
 	// strip non alphanumeric
 	command = command.replace(/\W/g, '');
-	// strip timecode
+	// strip checksum at the end
 	command = command.substring(0,command.length-2);
 
-	if (command in reverse_commands) {
+	if ((prefix=="F") && (command in reverse_commands)) {
 		command = reverse_commands[command];
 	}
+	// let the user decide what to do with the data with H prefix.
 
+	// ### Strip out the device's address:
 	// Reverse list of FS20 devices
 	var reverse_devices = {};
 	for(var device in self.devices) {
@@ -117,18 +140,20 @@ function receiveData(data,self) {
 
 	// convert FS20 address to device name
 	// if device not registered keep FS20 address
-	var device = data.toString().substr(1,6);
+	// Second to seventh character is the device's address.
+	var device = data.toString().substr(1,prefix=="F" ? 6 : 4);
 	if (device in reverse_devices) {
 		device = reverse_devices[device];
 		self.devices[device].lastCommand = command;
 	}
 
 	var message = {
+		'prefix' : prefix,
 		'device' : device,
 		'command' : command,
 		'full' : device+' '+command
 	}
-	winston.info('Received: '+message.full);
+	winston.info('Received: '+prefix+' '+message.full);
 	self.emit('read',message);
 } // receiveData
 
